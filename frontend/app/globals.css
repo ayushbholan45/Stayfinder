@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+@theme {
+  --color-stayfinder: #0F766E;
+  --color-stayfinder-dark: #064E3B;
+}

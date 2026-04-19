@@ -4,12 +4,11 @@ import PropertyList from "./ components/properties/PropertyList";
 
 export default function Home() {
   return (
-    <main className="max-w-6xl mx-auto px-6">
-      <Categories/>
-      
-      
+    <main className="max-w-375 mx-auto px-6">
+      <Categories />
+
       <div className="mt-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        <PropertyList/>
+        <PropertyList />
       </div>
     </main>
   );

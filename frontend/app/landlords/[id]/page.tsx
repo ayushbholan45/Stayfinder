@@ -4,11 +4,11 @@ import PropertyList from "@/app/ components/properties/PropertyList"
 
 const LandlordDetailpage = () => {
   return (
-    <main className="max-w-[1600px]  mx-auto px-6 pb-6">
+    <main className="max-w-400  mx-auto px-6 pb-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <aside className="col-span-1 mb-4">
             <div className="flex flex-col items-center p-6 rounded-xl border border-gray-300 shadow-xl overflow-hidden">
-                <div className="relative w-[150px] h-[150px] rounded-full overflow-hidden flex-shrink-0">
+                <div className="relative w-37.5 h-37.5 rounded-full overflow-hidden shrink-0">
                     <Image 
                     src='/profile_pic1.jpg'
                     fill

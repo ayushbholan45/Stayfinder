@@ -2,7 +2,7 @@ import Image from "next/image"
 
 const MyReservationsPage = () => {
   return (
-    <main className="max-w-[1600px]  mx-auto px-6 pb-6">
+    <main className="max-w-400  mx-auto px-6 pb-6">
         <h1 className="my-6 text-2xl">My reservations</h1>
         <div className="space-y-4">
             <div className="p-5 grid grid-cols-1 md:grid-cols-4 gap-4 shadow-md border border-gray-300 rounded-xl">

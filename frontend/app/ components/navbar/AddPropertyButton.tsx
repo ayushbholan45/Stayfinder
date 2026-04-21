@@ -2,9 +2,9 @@
 
 const AddPropertyButton = () => {
   return (
-    <div className="cursor-pointer p-2 text-sm font-semibold rounded-full hover:bg-gray-200">
+    <div className="cursor-pointer  text-sm font-semibold rounded-full hover:bg-gray-200">
 
-      <p>hello</p>
+      <p>djangobnb your home</p>
     </div>
   )
 }

@@ -9,3 +9,4 @@ pillow==12.2.0
 channels==4.3.2
 daphne==4.2.1
 python-dotenv==1.2.2
+requests==2.32.5

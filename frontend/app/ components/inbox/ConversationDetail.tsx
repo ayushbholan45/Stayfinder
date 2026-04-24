@@ -27,7 +27,7 @@ const ConversationDetail = () => {
             <CustomButtons 
                 label="Send"
                 onClick={() => console.log("Clicked")}
-                className="w-25"/>
+                className="w-25 bg-stayfinder hover:bg-stayfinder-dark"/>
                 
 
         </div>

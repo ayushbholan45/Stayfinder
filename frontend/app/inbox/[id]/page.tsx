@@ -1,11 +1,41 @@
-import ConversationDetail from "@/app/ components/inbox/ConversationDetail"
+import { getUserId, getAccessToken } from "../../lib/actions";
+import apiService from "@/app/services/apiService";
+import ConversationDetail from "@/app/ components/inbox/ConversationDetail";
+import { UserType } from "../page";
 
-const ConversationPage = () => {
-  return (
-    <main className="max-w-400  mx-auto px-6 pb-6">
-      <ConversationDetail/>
-    </main>
-  )
+export type MessageType = {
+    id: string;
+    name: string;
+    body: string;
+    conversationId: string;
+    sent_to: UserType;  
+    created_by: UserType;
 }
 
-export default ConversationPage
+const ConversationPage = async ({ params }: { params: Promise<{ id: string }> }) => {
+    const { id } = await params;
+    const userId = await getUserId();
+    const token = await getAccessToken();
+
+    if (!userId || !token) {
+        return (
+            <main className="max-w-400 max-auto px-6 py-12">
+                <p>You need to be authenticated...</p>
+            </main>
+        )
+    }
+
+    const conversation = await apiService.get(`/api/chat/${id}/`)
+    
+    return (
+        <main className="max-w-400 mx-auto px-6 pb-6">
+            <ConversationDetail 
+                token={token}
+                userId={userId}
+                conversation={conversation.conversation}
+            />
+        </main>
+    )
+}
+
+export default ConversationPage;

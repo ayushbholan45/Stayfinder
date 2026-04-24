@@ -25,7 +25,7 @@ const InboxPage = async () => {
         )
     }
 
-    const conversations = await apiService.get('/api/chat/')
+    const conversations = await apiService.get('/api/chat/') ?? []
 
     return (
         <main className="max-w-400 mx-auto px-6 pb-6 space-y-4">

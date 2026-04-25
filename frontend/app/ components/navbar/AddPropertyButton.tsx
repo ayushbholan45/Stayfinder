@@ -27,7 +27,7 @@ const AddPropertyButton: React.FC<AddPropertyButtonProps> = ({ userId }) => {
       onClick={stayfinderYourHome}
       className="cursor-pointer  text-sm font-semibold rounded-full hover:bg-gray-200">
 
-      <p>djangobnb your home</p>
+      <p>Stayfinder your home</p>
     </div>
   )
 }

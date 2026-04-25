@@ -7,12 +7,15 @@ import useLoginModal from "@/app/hooks/useLoginModal"
 import CustomButtons from "../forms/CustomButtons"
 import apiService from "@/app/services/apiService"
 import { handleLogin } from "@/app/lib/actions"
+import useToast from "@/app/hooks/useToast"
+
 const LoginModal = () => {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const loginModal = useLoginModal();
     const [errors, setErrors] = useState<string[]>([]);
+    const toast = useToast();
 
     const submitLogin = async() => {
         const formData = {
@@ -23,23 +26,32 @@ const LoginModal = () => {
         const response = await apiService.postWithoutToken('/api/auth/login/', JSON.stringify(formData));
 
         if (response.access){
-            handleLogin(response.user.pk, response.access, response.refresh);
-
-            loginModal.close()
-
-            router.push('/')
-        }else {
+            await handleLogin(response.user.pk, response.access, response.refresh);
+            toast.show('Successfully logged in!');
+            loginModal.close();
+            router.push('/');
+        } else {
             setErrors(response.non_field_errors);
         }
     }
 
-    const content= (
+    const content = (
         <>
             <form 
                 action={submitLogin}
                 className="space-y-4">
-                <input onChange={(e) => setEmail(e.target.value)} placeholder= "Your email address" type="email" className="w-full h-13.5 px-4 border border-gray-300 rounded-xl" />
-                <input onChange={(e) => setPassword(e.target.value)}placeholder= "Your password" type="password" className="w-full h-13.5 px-4 border border-gray-300 rounded-xl" />
+                <input 
+                    onChange={(e) => setEmail(e.target.value)} 
+                    placeholder="Your email address" 
+                    type="email" 
+                    className="w-full h-13.5 px-4 border border-gray-300 rounded-xl" 
+                />
+                <input 
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Your password" 
+                    type="password" 
+                    className="w-full h-13.5 px-4 border border-gray-300 rounded-xl" 
+                />
 
                 {errors.map((error, index) => { 
                     return (
@@ -54,22 +66,20 @@ const LoginModal = () => {
                 <CustomButtons
                     label="Submit"
                     className="bg-stayfinder hover:bg-stayfinder-dark"
-                    onClick={submitLogin}/> 
+                    onClick={submitLogin}
+                /> 
             </form>
-
         </>
-        
-
-        
     ) 
-  return (
-    <Modal
-        isOpen={loginModal.isOpen}
-        close={loginModal.close}
-        label="Login"
-        content={content}
+
+    return (
+        <Modal
+            isOpen={loginModal.isOpen}
+            close={loginModal.close}
+            label="Login"
+            content={content}
         />
-  )
+    )
 }
 
 export default LoginModal

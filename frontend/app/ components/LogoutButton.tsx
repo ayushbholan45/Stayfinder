@@ -1,18 +1,18 @@
 'use client';
 
 import { useRouter } from "next/navigation";
-
 import { resetAuthCookies } from '../lib/actions';
-
 import MenuLink from "./navbar/MenuLink";
+import useToast from "@/app/hooks/useToast";
 
 const LogoutButton: React.FC = () => {
     const router = useRouter();
+    const toast = useToast();
 
     const submitLogout = async () => {
-        resetAuthCookies();
-
-        router.push('/')
+        await resetAuthCookies();
+        toast.show('Successfully logged out!');
+        router.push('/');
     }
 
     return (

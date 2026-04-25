@@ -1,3 +1,5 @@
+import stripe
+import os
 from django.http import JsonResponse
 
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -7,6 +9,30 @@ from .serializers import PropertiesListSerializer, PropertiesDetailSerializer, R
 
 from .forms import PropertyForm
 from useraccount.models import User
+
+
+stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
+
+@api_view(['POST'])
+def create_payment_intent(request, pk):
+    try:
+        property = Property.objects.get(pk=pk)
+        total_price = request.POST.get('total_price', '')
+
+        intent = stripe.PaymentIntent.create(
+            amount=int(float(total_price) * 100),  # Stripe uses cents
+            currency='usd',
+            metadata={
+                'property_id': str(pk),
+                'user_id': str(request.user.id)
+            }
+        )
+
+        return JsonResponse({'clientSecret': intent.client_secret})
+    except Exception as e:
+        print('Stripe error:', e)
+        return JsonResponse({'error': str(e)}, status=400)
+
 
 @api_view(['GET'])
 @authentication_classes([])
@@ -172,4 +198,5 @@ def toggle_favorite(request, pk):
 
         return JsonResponse({'is_favorite': True})
     
+
     

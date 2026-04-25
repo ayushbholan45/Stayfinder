@@ -21,8 +21,12 @@ class Property(models.Model):
     landlord = models.ForeignKey(User, related_name='properties', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     
+    def __str__(self):
+        return self.title 
+    
     def image_url(self):
         return f'{settings.WEBSITE_URL}{self.image.url}'
+    
     
 
 class Reservation(models.Model):
@@ -35,3 +39,6 @@ class Reservation(models.Model):
     total_price = models.FloatField()
     created_by = models.ForeignKey(User, related_name='reservations', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f'{self.property.title} | {self.start_date} to {self.end_date} | {self.created_by}'

@@ -42,3 +42,16 @@ class Reservation(models.Model):
     
     def __str__(self):
         return f'{self.property.title} | {self.start_date} to {self.end_date} | {self.created_by}'
+    
+    
+class Review(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    property = models.ForeignKey(Property, related_name='reviews', on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, related_name='reviews', on_delete=models.CASCADE)
+    reservation = models.OneToOneField(Reservation, related_name='review', on_delete=models.CASCADE)
+    rating = models.IntegerField()
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.property.title} | {self.created_by.name} | {self.rating}⭐'

@@ -8,6 +8,7 @@ import { differenceInDays, eachDayOfInterval, format } from "date-fns";
 import DatePicker from "../forms/Calendar";
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { useRouter } from "next/navigation";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -21,14 +22,25 @@ export type Property = {
     id: string;
     guests: number;
     price_per_night: number;
+    landlord: {
+        id: string;
+    };
+}
+
+export type ExistingReservation = {
+    id: string;
+    start_date: string;
+    end_date: string;
+    number_of_nights: number;
+    total_price: number;
 }
 
 interface ReservationSidebarProps {
     userId: string | null;
     property: Property;
+    existingReservation?: ExistingReservation | null;
 }
 
-// ✅ Stripe checkout form
 interface CheckoutFormProps {
     propertyId: string;
     startDate: string;
@@ -68,7 +80,6 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
         }
 
         if (paymentIntent && paymentIntent.status === 'succeeded') {
-            // Create reservation after payment
             const formData = new FormData();
             formData.append('guests', guests);
             formData.append('start_date', startDate);
@@ -115,20 +126,87 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
     );
 };
 
-const ReservationSidebar: React.FC<ReservationSidebarProps> = ({ property, userId }) => {
+const ReservationSidebar: React.FC<ReservationSidebarProps> = ({ property, userId, existingReservation }) => {
     const loginModal = useLoginModal();
+    const router = useRouter();
 
     const [fee, setFee] = useState<number>(0);
     const [nights, setNights] = useState<number>(1);
     const [totalPrice, setTotalPrice] = useState<number>(0);
     const [dateRange, setDateRange] = useState<Range>(initialDateRange);
-    const [minDate, setMinDate] = useState<Date>(new Date());
     const [bookedDates, setBookedDates] = useState<Date[]>([]);
     const [guests, setGuests] = useState<string>('1');
     const [clientSecret, setClientSecret] = useState<string>('');
     const [showPayment, setShowPayment] = useState<boolean>(false);
     const [bookingSuccess, setBookingSuccess] = useState<boolean>(false);
     const guestsRange = Array.from({ length: property.guests }, (_, index) => index + 1);
+
+    const handleMessageHost = async () => {
+        try {
+            const response = await apiService.get(`/api/chat/start/${property.landlord.id}/`);
+            if (response.conversation_id) {
+                router.push(`/inbox/${response.conversation_id}`);
+            }
+        } catch {
+            console.error('Could not start conversation');
+        }
+    };
+
+    if (property.landlord.id === userId) {
+        return (
+            <aside className="mt-8 p-6 col-span-2 rounded-xl border border-gray-300 shadow-xl">
+                <div className="text-center py-8">
+                    <p className="text-2xl mb-2">🏠</p>
+                    <h2 className="text-xl font-bold mb-2">This is your property!</h2>
+                    <p className="text-gray-500">You cannot book your own property.</p>
+                </div>
+            </aside>
+        );
+    }
+
+    if (existingReservation && new Date(existingReservation.end_date) >= new Date()) {
+        return (
+            <aside className="mt-8 p-6 col-span-2 rounded-xl border border-gray-300 shadow-xl">
+                <div className="mb-4 inline-block px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
+                    ✓ Booked
+                </div>
+                <h2 className="text-xl font-bold mb-4">Your reservation</h2>
+
+                <div className="space-y-3 text-sm">
+                    <div className="flex justify-between py-2 border-b border-gray-100">
+                        <span className="text-gray-500">Check-in</span>
+                        <span className="font-semibold">{existingReservation.start_date}</span>
+                    </div>
+                    <div className="flex justify-between py-2 border-b border-gray-100">
+                        <span className="text-gray-500">Check-out</span>
+                        <span className="font-semibold">{existingReservation.end_date}</span>
+                    </div>
+                    <div className="flex justify-between py-2 border-b border-gray-100">
+                        <span className="text-gray-500">Duration</span>
+                        <span className="font-semibold">{existingReservation.number_of_nights} nights</span>
+                    </div>
+                    <div className="flex justify-between py-2">
+                        <span className="text-gray-500">Total paid</span>
+                        <span className="font-bold text-lg">${existingReservation.total_price}</span>
+                    </div>
+                </div>
+
+                <button
+                    onClick={handleMessageHost}
+                    className="mt-6 w-full text-center py-3 border border-gray-300 rounded-xl font-semibold hover:bg-gray-50 transition text-sm"
+                >
+                    Message host
+                </button>
+
+                <button
+                    onClick={() => router.push('/profile')}
+                    className="mt-3 w-full text-center py-3 text-red-500 border border-red-200 bg-red-50 rounded-xl font-semibold hover:bg-red-100 transition text-sm"
+                >
+                    Cancel reservation
+                </button>
+            </aside>
+        );
+    }
 
     const performBooking = async () => {
         if (userId) {
@@ -205,7 +283,7 @@ const ReservationSidebar: React.FC<ReservationSidebarProps> = ({ property, userI
         return (
             <aside className="mt-8 p-6 col-span-2 rounded-xl border border-gray-300 shadow-xl">
                 <div className="text-center py-8">
-                    <p className="text-2xl mb-2"></p>
+                    <p className="text-2xl mb-2">🎉</p>
                     <h2 className="text-xl font-bold mb-2">Booking Confirmed!</h2>
                     <p className="text-gray-500">Your reservation has been successfully created.</p>
                 </div>

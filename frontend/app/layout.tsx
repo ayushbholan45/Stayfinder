@@ -7,6 +7,7 @@ import LoginModal from "./ components/modals/LoginModal";
 import SignupModal from "./ components/modals/SignupModal";
 import AddPropertyModal from "./ components/modals/AddPropertyModal";
 import Toast from './ components/Toast';
+import Footer from './ components/Footer';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,10 +40,11 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <Navbar/>
 
-        <div className="pt-32">
+        <div className="pt-32 pb-12">
           {children}
         </div>
-        
+
+        <Footer/>
         <LoginModal/>
         <SearchModal/>
         <SignupModal/>

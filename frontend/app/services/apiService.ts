@@ -26,6 +26,29 @@ const apiService = {
         return response.json();
     },
 
+    delete: async function (url: string): Promise<any> {
+        console.log('delete', url);
+
+        let headers: Record<string, string> = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        };
+
+        try {
+            const token = await getAccessToken();
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+        } catch {}
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
+            method: 'DELETE',
+            headers
+        });
+
+        return response.json();
+    },
+
     post: async function (url: string, data: any): Promise<any> {
         console.log('post', url, data);
 

@@ -9,7 +9,14 @@ class UserDetailSerializer(serializers.ModelSerializer):
             'id', 'name', 'avatar_url'
         )
 
-class CustomRegisterSerializer(RegisterSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'id', 'name', 'email', 'avatar_url', 'bio'
+        )
+
+class CustomRegisterSerializer(RegisterSerializer):  
     username = None
     name = serializers.CharField(required=True)
 

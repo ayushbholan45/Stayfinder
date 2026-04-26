@@ -18,11 +18,13 @@ export type PropertyType = {
 interface PropertyListProps {
     landlord_id?: string | null;
     favorites?: boolean | null;
+    emptyMessage?: React.ReactNode;
 }
 
 const PropertyList: React.FC<PropertyListProps> = ({
     landlord_id,
-    favorites
+    favorites,
+    emptyMessage
 }) => {
     const params = useSearchParams();
     const searchModal = useSearchModal();
@@ -90,6 +92,10 @@ const PropertyList: React.FC<PropertyListProps> = ({
         checkoutDate?.toISOString(),
         params.toString()
     ]);
+
+    if (properties.length === 0 && emptyMessage) {
+        return <>{emptyMessage}</>;
+    }
 
     return (
         <>

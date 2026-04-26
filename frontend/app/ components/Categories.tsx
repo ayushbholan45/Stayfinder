@@ -1,8 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
-import useSearchModal, {SearchQuery} from '../hooks/useSearchModal';
+import useSearchModal, { SearchQuery } from '../hooks/useSearchModal';
+import { LayoutGrid, Waves, Building2, TreePine, Home } from 'lucide-react';
+
+const categories = [
+    { label: 'All', value: '', icon: LayoutGrid },
+    { label: 'Beach', value: 'beach', icon: Waves },
+    { label: 'Villas', value: 'villas', icon: Building2 },
+    { label: 'Cabins', value: 'cabins', icon: TreePine },
+    { label: 'Tiny homes', value: 'tiny_homes', icon: Home },
+];
 
 const Categories = () => {
     const searchModal = useSearchModal();
@@ -19,79 +27,27 @@ const Categories = () => {
             bedrooms: searchModal.query.bedrooms,
             bathrooms: searchModal.query.bathrooms,
             category: _category
-        }
+        };
 
         searchModal.setQuery(query);
-    }
+    };
 
     return (
-        <div className="pt-3 cursor-pointer pb-6 flex items-center space-x-12">
-            <div 
-                onClick={() => _setCategory('')}
-                className={`pb-4 flex flex-col items-center space-y-2 border-b-2 ${category == '' ? 'border-black' : 'border-white'} opacity-60 hover:border-gray-200 hover:opacity-100`}>
-                <Image
-                    src="/icn_category_beach.png"
-                    alt="Category - Beach"
-                    width={20}
-                    height={20}
-                />
-
-                <span className='text-xs'>All</span>
-            </div>
-            
-            <div 
-                onClick={() => _setCategory('beach')}
-                className={`pb-4 flex flex-col items-center space-y-2 border-b-2 ${category == 'beach' ? 'border-black' : 'border-white'} opacity-60 hover:border-gray-200 hover:opacity-100`}>
-                <Image
-                    src="/icn_category_beach.png"
-                    alt="Category - Beach"
-                    width={20}
-                    height={20}
-                />
-
-                <span className='text-xs'>Beach</span>
-            </div>
-
-            <div 
-                onClick={() => _setCategory('villas')}
-                className={`pb-4 flex flex-col items-center space-y-2 border-b-2 ${category == 'villas' ? 'border-black' : 'border-white'} opacity-60 hover:border-gray-200 hover:opacity-100`}>
-                <Image
-                    src="/icn_category_beach.png"
-                    alt="Category - Beach"
-                    width={20}
-                    height={20}
-                />
-
-                <span className='text-xs'>Villas</span>
-            </div>
-
-            <div 
-                onClick={() => _setCategory('cabins')}
-                className={`pb-4 flex flex-col items-center space-y-2 border-b-2 ${category == 'cabins' ? 'border-black' : 'border-white'} opacity-60 hover:border-gray-200 hover:opacity-100`}>
-                <Image
-                    src="/icn_category_beach.png"
-                    alt="Category - Beach"
-                    width={20}
-                    height={20}
-                />
-
-                <span className='text-xs'>Cabins</span>
-            </div>
-
-            <div
-                onClick={() => _setCategory('tiny_homes')} 
-                className={`pb-4 flex flex-col items-center space-y-2 border-b-2 ${category == 'tiny_homes' ? 'border-black' : 'border-white'} opacity-60 hover:border-gray-200 hover:opacity-100`}>
-                <Image
-                    src="/icn_category_beach.png"
-                    alt="Category - Beach"
-                    width={20}
-                    height={20}
-                />
-
-                <span className='text-xs'>Tiny homes</span>
-            </div>
+        <div className="pt-3 cursor-pointer pb-6 flex items-center space-x-8">
+            {categories.map(({ label, value, icon: Icon }) => (
+                <div
+                    key={value}
+                    onClick={() => _setCategory(value)}
+                    className={`pb-4 flex flex-col items-center space-y-2 border-b-2 ${
+                        category === value ? 'border-black opacity-100' : 'border-white opacity-60'
+                    } hover:border-gray-200 hover:opacity-100 transition-all whitespace-nowrap`}
+                >
+                    <Icon size={20} strokeWidth={1.5} />
+                    <span className="text-xs">{label}</span>
+                </div>
+            ))}
         </div>
-    )
-}
+    );
+};
 
 export default Categories;

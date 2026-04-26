@@ -4,8 +4,9 @@ from django.http import JsonResponse
 
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework_simplejwt.tokens import AccessToken
-from .models import Property, Reservation
-from .serializers import PropertiesListSerializer, PropertiesDetailSerializer, ReservationsListSerializer
+from .models import Property, Reservation, Review
+from .serializers import PropertiesListSerializer, PropertiesDetailSerializer, ReservationsListSerializer, ReviewSerializer
+from datetime import date
 
 from .forms import PropertyForm
 from useraccount.models import User
@@ -199,4 +200,56 @@ def toggle_favorite(request, pk):
         return JsonResponse({'is_favorite': True})
     
 
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([])
+def property_reviews(request, pk):
+    property = Property.objects.get(pk=pk)
+    reviews = property.reviews.all().order_by('-created_at')
+    serializer = ReviewSerializer(reviews, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+@api_view(['POST'])
+def add_review(request, pk):
+    try:
+        property = Property.objects.get(pk=pk)
+
+        # Check if user is the landlord
+        if property.landlord == request.user:
+            return JsonResponse({'error': 'You cannot review your own property'}, status=400)
+
+        # Check if user has a completed reservation
+        completed_reservation = Reservation.objects.filter(
+            property=property,
+            created_by=request.user,
+            end_date__lt=date.today()
+        ).first()
+
+        if not completed_reservation:
+            return JsonResponse({'error': 'You can only review properties you have stayed at'}, status=400)
+
+        # Check if already reviewed this reservation
+        if hasattr(completed_reservation, 'review'):
+            return JsonResponse({'error': 'You have already reviewed this stay'}, status=400)
+
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment')
+
+        if not rating or not comment:
+            return JsonResponse({'error': 'Rating and comment are required'}, status=400)
+
+        review = Review.objects.create(
+            property=property,
+            created_by=request.user,
+            reservation=completed_reservation,
+            rating=int(rating),
+            comment=comment
+        )
+
+        serializer = ReviewSerializer(review, many=False)
+        return JsonResponse(serializer.data, safe=False)
+
+    except Exception as e:
+        print('Error', e)
+        return JsonResponse({'error': str(e)}, status=400)
     

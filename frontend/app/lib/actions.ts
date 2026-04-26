@@ -2,6 +2,34 @@
 
 import { cookies } from 'next/headers';
 
+async function handleRefreshReadOnly() {
+    const cookieStore = await cookies();
+    const refreshToken = cookieStore.get('session_refresh_token')?.value;
+
+    if (!refreshToken) return null;
+
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/auth/token/refresh/`, {
+            method: 'POST',
+            body: JSON.stringify({ refresh: refreshToken }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const json = await response.json();
+
+        if (json.access) {
+            return json.access;
+        }
+
+        return null;
+    } catch {
+        return null;
+    }
+}
+
 export async function handleRefresh() {
     console.log('handleRefresh');
 
@@ -89,7 +117,7 @@ export async function getAccessToken() {
     let accessToken = cookieStore.get('session_access_token')?.value;
 
     if (!accessToken) {
-        accessToken = await handleRefresh() ?? undefined;
+        accessToken = await handleRefreshReadOnly() ?? undefined;
     }
 
     return accessToken ?? null;

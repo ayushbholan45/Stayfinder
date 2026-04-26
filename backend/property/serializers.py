@@ -1,9 +1,10 @@
 from rest_framework import serializers
-from .models import Property, Reservation
-
+from .models import Property, Reservation, Review
 from useraccount.serializers import UserDetailSerializer
 
 class PropertiesListSerializer(serializers.ModelSerializer):
+    landlord = UserDetailSerializer(read_only=True, many=False)
+
     class Meta:
         model = Property
         fields = (
@@ -11,6 +12,7 @@ class PropertiesListSerializer(serializers.ModelSerializer):
             'title',
             'price_per_night',
             'image_url',
+            'landlord',
         )
 
 class PropertiesDetailSerializer(serializers.ModelSerializer):
@@ -29,8 +31,7 @@ class PropertiesDetailSerializer(serializers.ModelSerializer):
             'guests',
             'landlord'
         )
-        
-        
+
 class ReservationsListSerializer(serializers.ModelSerializer):
     property = PropertiesListSerializer(read_only=True, many=False)
     
@@ -38,4 +39,13 @@ class ReservationsListSerializer(serializers.ModelSerializer):
         model = Reservation
         fields = (
             'id', 'start_date', 'end_date', 'number_of_nights', 'total_price', 'property'
+        )
+
+class ReviewSerializer(serializers.ModelSerializer):
+    created_by = UserDetailSerializer(read_only=True, many=False)
+
+    class Meta:
+        model = Review
+        fields = (
+            'id', 'rating', 'comment', 'created_by', 'created_at'
         )

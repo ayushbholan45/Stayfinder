@@ -139,9 +139,11 @@ ASGI_APPLICATION = 'stayfinder_backend.asgi.application'
 # Database — uses DATABASE_URL on Render, falls back to individual vars locally
 if os.environ.get("DATABASE_URL"):
     DATABASES = {
-        "default": dj_database_url.parse(
-            os.environ.get("DATABASE_URL"),
+        "default": dj_database_url.config(
+            default=DATABASE_URL,
             conn_max_age=600,
+            # Neon requires SSL, this line ensures it works
+            ssl_require=True 
         )
     }
 else:

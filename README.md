@@ -1,4 +1,4 @@
-# StayFinder
+<img width="1675" height="963" alt="homepage" src="https://github.com/user-attachments/assets/2ec58e57-8f67-44e8-b840-666f030e5342" /># StayFinder
 
 > A full-stack property rental platform — find and host unique stays around the world.
 
@@ -34,7 +34,7 @@ StayFinder is an Airbnb-inspired property rental ecosystem built with a **Next.j
 ## Screenshots
 
 ###  Homepage — Property Listings
-![Homepage](./screenshots/screenshot-homepage.png)
+![Homepage]<img width="1675" height="963" alt="homepage" src="https://github.com/user-attachments/assets/a235b69f-50de-43d2-913f-12e3ae6cf1ec" />
 > Browse properties across the globe with category filters (Beach, Villas, Cabins, Tiny Homes) and a responsive listings grid showing price per night.
 
 ---

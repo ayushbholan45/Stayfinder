@@ -3,28 +3,49 @@ import Image from "next/image"
 import SearchFilters from "./SearchFilters"
 import UserNav from "./UserNav"
 import AddPropertyButton from "./AddPropertyButton"
+import { getUserId } from "@/app/lib/actions"
+import apiService from "@/app/services/apiService"
 
-const Navbar = () => {
+const Navbar = async () => {
+  const userId = await getUserId();
+  let userName = null;
+
+  if (userId) {
+    try {
+      const profile = await apiService.get('/api/auth/profile/');
+      userName = profile.name;
+    } catch {
+      userName = null;
+    }
+  }
+
   return (
-    <nav className="w-full fixed top-0 left-0 py-6 border-b border-gray-200  bg-white z-10">
-        <div className="max-w-400 mx-auto px-6">
-            <div className="flex justify-between items-center">
-                <Link href="/">
-                    <Image src="/logo.svg" alt="stayfinder logo" width={180} height={38}
-                    />
-                </Link>
-
-                <div className="flex space-x-6">
-                    <SearchFilters/>
-                </div>
-
-                <div className="flex items-center space-x-6">
-                    <AddPropertyButton/>
-                    <UserNav/>
-                </div>
-            </div>
-
+    <nav className="w-full fixed top-0 left-0 py-6 border-b border-gray-200 bg-white z-10">
+      <div className="max-w-400 mx-auto px-6">
+        <div className="flex justify-between items-center">
+          <Link href="/">
+            <Image
+              src="/logo.svg"
+              alt="stayfinder logo"
+              width={180}
+              height={38}
+              priority
+            />
+          </Link>
+          <div className="flex space-x-6">
+            <SearchFilters/>
+          </div>
+          <div className="flex items-center space-x-6">
+            <AddPropertyButton
+                userId={userId}
+            />
+            <UserNav
+              userId={userId}
+              userName={userName}
+            />
+          </div>
         </div>
+      </div>
     </nav>
   )
 }

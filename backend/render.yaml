@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: stayfinder-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    startCommand: daphne -b 0.0.0.0 -p $PORT stayfinder.asgi:application
+    envVars:
+      - key: DATABASE
+        value: postgres
+      - key: DJANGO_SETTINGS_MODULE
+        value: stayfinder.settings
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: stayfinder-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: stayfinder-redis
+          type: redis
+          property: connectionString
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: CORS_ALLOWED_ORIGINS
+        value: "https://your-frontend.vercel.app"
+
+  - type: redis
+    name: stayfinder-redis
+    plan: free
+
+databases:
+  - name: stayfinder-db
+    plan: free

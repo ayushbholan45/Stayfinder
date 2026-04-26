@@ -1,4 +1,4 @@
-<img width="1675" height="963" alt="homepage" src="https://github.com/user-attachments/assets/2ec58e57-8f67-44e8-b840-666f030e5342" /># StayFinder
+
 
 > A full-stack property rental platform — find and host unique stays around the world.
 
@@ -21,7 +21,6 @@
 - [Environment Variables](#-environment-variables)
 - [API Reference](#-api-reference)
 - [Deployment](#-deployment)
-- [Roadmap](#-roadmap)
 
 ---
 
@@ -34,45 +33,52 @@ StayFinder is an Airbnb-inspired property rental ecosystem built with a **Next.j
 ## Screenshots
 
 ###  Homepage — Property Listings
-![Homepage]<img width="1675" height="963" alt="homepage" src="https://github.com/user-attachments/assets/a235b69f-50de-43d2-913f-12e3ae6cf1ec" />
+![Homepage] <img width="3360" height="3232" alt="image" src="https://github.com/user-attachments/assets/6017c2b0-6cb1-4239-95f7-152d9a173264" />
+
 > Browse properties across the globe with category filters (Beach, Villas, Cabins, Tiny Homes) and a responsive listings grid showing price per night.
 
 ---
 
 ### 🏡 Property Detail Page
-![Property Detail](./screenshots/screenshot-property-detail.png)
+![Property Detail] <img width="3360" height="4018" alt="image" src="https://github.com/user-attachments/assets/75f0cb1e-ddf1-4976-b4fd-458b33b60ed1" />
+
 > Full property view with hero image, host info, AI-generated description, interactive booking calendar, guest selector, fee breakdown, and a complete review system.
 
 ---
 
 ### Advanced Search — Location
-![Search Location](./screenshots/screenshot-search-location.png)
+![Search Location] <img width="3360" height="3232" alt="image" src="https://github.com/user-attachments/assets/721c9c77-eeb1-48e9-a641-5dac94dd6706" />  
+
 > Step 1 of the guided search modal — enter your desired destination.
 
-### Advanced Search — Date Picker
-![Search Dates](./screenshots/screenshot-search-dates.png)
+### Advanced Search — Date Picker 
+![Search Dates] <img width="3360" height="3232" alt="image" src="https://github.com/user-attachments/assets/c86dbf60-7883-4bd1-8961-3e903237bf9b" /> <img width="3360" height="3232" alt="image" src="https://github.com/user-attachments/assets/3a873500-5ef4-4655-83c7-c875f89d6901" />
 > Step 2 — interactive calendar for selecting check-in and check-out dates.
 
 ### Advanced Search — Guest & Room Details
-![Search Details](./screenshots/screenshot-search-details.png)
+![Search Details] <img width="3360" height="3232" alt="image" src="https://github.com/user-attachments/assets/41fd0148-447b-45c0-8315-4cf7fb64a532" />
 > Step 3 — specify number of guests, bedrooms, and bathrooms to narrow results precisely.
 
 ---
 
 ### AI Description Generator
-![AI Description](./screenshots/screenshot-ai-description.png)
+![AI Description] <img width="3360" height="3232" alt="image" src="https://github.com/user-attachments/assets/f9d5d6d9-c023-4c96-b301-877d42117061" />
+
 > One click on **✦ Generate with AI** produces a professional property description based on your listing metadata — title, location, capacity, and price. Fully editable before publishing.
 
 ---
 
 ### Real-Time Messaging
-![Chat](./screenshots/screenshot-chat.png)
+![Chat] <img width="1678" height="963" alt="inbox messages" src="https://github.com/user-attachments/assets/423ef53d-f070-4841-8dbd-9fbbf656d959" />
+
 > WebSocket-powered instant messaging between guests and hosts, scoped per property and per user pair. Messages appear live without any page refresh.
 
 ---
 
 ### Reservations Dashboard
-![Reservations](./screenshots/screenshot-reservations.png)
+![Reservations] <img width="3360" height="2746" alt="image" src="https://github.com/user-attachments/assets/f7a0e068-c51e-460f-9e83-5a0782ad387f" /> <img width="3360" height="2470" alt="image" src="https://github.com/user-attachments/assets/7faeff9c-7a5e-4e13-888e-a8e52cd6cf6f" /> 
+
+
 > Guest-facing profile with upcoming trips, past trips, booking details, cancel booking, message host, and a "Book again" shortcut for returning guests.
 
 ---

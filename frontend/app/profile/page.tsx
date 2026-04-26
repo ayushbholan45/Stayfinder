@@ -87,7 +87,7 @@ const ProfilePage = () => {
     const handleCancel = async (reservationId: string) => {
         setCancellingId(reservationId);
         try {
-            await apiService.delete(`/api/auth/myreservations/${reservationId}/cancel/`);
+            await apiService.delete(`/api/properties/reservations/${reservationId}/cancel/`);
             toast.show('Reservation cancelled.');
             setConfirmCancelId(null);
             getReservations();

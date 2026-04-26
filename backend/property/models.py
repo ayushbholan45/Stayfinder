@@ -55,3 +55,17 @@ class Review(models.Model):
 
     def __str__(self):
         return f'{self.property.title} | {self.created_by.name} | {self.rating}⭐'
+    
+    
+    
+class PropertyImage(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    property = models.ForeignKey(Property, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='uploads/properties')
+    order = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f'{self.property.title} - image {self.order}'
+
+    def image_url(self):
+        return f'{settings.WEBSITE_URL}{self.image.url}'

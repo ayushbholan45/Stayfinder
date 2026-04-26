@@ -1,9 +1,15 @@
 from rest_framework import serializers
-from .models import Property, Reservation, Review
+from .models import Property, Reservation, Review, PropertyImage
 from useraccount.serializers import UserDetailSerializer
+
+class PropertyImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PropertyImage
+        fields = ('id', 'image_url', 'order')
 
 class PropertiesListSerializer(serializers.ModelSerializer):
     landlord = UserDetailSerializer(read_only=True, many=False)
+    images = PropertyImageSerializer(read_only=True, many=True)
 
     class Meta:
         model = Property
@@ -12,12 +18,14 @@ class PropertiesListSerializer(serializers.ModelSerializer):
             'title',
             'price_per_night',
             'image_url',
+            'images',
             'landlord',
         )
 
 class PropertiesDetailSerializer(serializers.ModelSerializer):
     landlord = UserDetailSerializer(read_only=True, many=False)
-    
+    images = PropertyImageSerializer(read_only=True, many=True)
+
     class Meta:
         model = Property
         fields = (
@@ -26,6 +34,7 @@ class PropertiesDetailSerializer(serializers.ModelSerializer):
             'description',
             'price_per_night',
             'image_url',
+            'images',
             'bedrooms',
             'bathrooms',
             'guests',
@@ -34,7 +43,7 @@ class PropertiesDetailSerializer(serializers.ModelSerializer):
 
 class ReservationsListSerializer(serializers.ModelSerializer):
     property = PropertiesListSerializer(read_only=True, many=False)
-    
+
     class Meta:
         model = Reservation
         fields = (

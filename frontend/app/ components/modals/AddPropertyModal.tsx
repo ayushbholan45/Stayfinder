@@ -27,6 +27,7 @@ const AddPropertyModal = () => {
     const [dataImage, setDataImage] = useState<File | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [dataImages, setDataImages] = useState<File[]>([]);
 
     const addPropertyModal = useAddPropertyModal();
     const router = useRouter();
@@ -35,10 +36,19 @@ const AddPropertyModal = () => {
         setDataCategory(category);
     }
 
-    const setImage = (event: ChangeEvent<HTMLInputElement>) => {
+    const setImages = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
-            const tmpImage = event.target.files[0];
-            setDataImage(tmpImage);
+            const files = Array.from(event.target.files);
+            setDataImages(prev => [...prev, ...files]);
+            if (!dataImage) setDataImage(files[0]);
+        }
+    }
+
+    const removeImage = (index: number) => {
+        const updated = dataImages.filter((_, i) => i !== index);
+        setDataImages(updated);
+        if (index === 0) {
+            setDataImage(updated[0] || null);
         }
     }
 
@@ -92,6 +102,9 @@ const AddPropertyModal = () => {
             formData.append('country', dataCountry.label)
             formData.append('country_code', dataCountry.value)
             formData.append('image', dataImage)
+            dataImages.forEach((img) => {
+                formData.append('images', img)
+            })
 
             const response = await apiService.post('/api/properties/create/', formData)
 
@@ -112,9 +125,10 @@ const AddPropertyModal = () => {
     const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
         e.preventDefault();
         setIsDragging(false);
-        const file = e.dataTransfer.files[0];
-        if (file && file.type.startsWith('image/')) {
-            setDataImage(file);
+        const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+        if (files.length > 0) {
+            setDataImages(prev => [...prev, ...files]);
+            if (!dataImage) setDataImage(files[0]);
         }
     }
 
@@ -293,10 +307,10 @@ const AddPropertyModal = () => {
                     />
                 </>
 
-            /* Step 6 - Image */
+            /* Step 6 - Images */
             ) : (
                 <>
-                    <h2 className="mb-6 text-2xl">Image</h2>
+                    <h2 className="mb-6 text-2xl">Images</h2>
                     <div className="pt-3 pb-6 space-y-4">
                         <div className="flex flex-col gap-2">
                             <label
@@ -311,49 +325,62 @@ const AddPropertyModal = () => {
                                     }`}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-400">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                    <polyline points="17 8 12 3 7 8" />
-                                    <line x1="12" y1="3" x2="12" y2="15" />
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="17 8 12 3 7 8"/>
+                                    <line x1="12" y1="3" x2="12" y2="15"/>
                                 </svg>
                                 <div className="text-center">
                                     <p className="text-sm font-medium text-neutral-700">
-                                        {isDragging ? 'Drop your image here' : 'Choose file'}
+                                        {isDragging ? 'Drop your images here' : 'Choose files'}
                                     </p>
-                                    <p className="text-xs text-neutral-400 mt-1">or drag and drop here</p>
+                                    <p className="text-xs text-neutral-400 mt-1">or drag and drop here · multiple allowed</p>
                                 </div>
                                 <input
                                     id="file-upload"
                                     type="file"
                                     accept="image/*"
+                                    multiple
                                     className="hidden"
-                                    onChange={setImage}
+                                    onChange={setImages}
                                 />
                             </label>
-                            <p className="text-xs text-neutral-400 text-center">PNG, JPG, WEBP up to 10MB</p>
+                            <p className="text-xs text-neutral-400 text-center">PNG, JPG, WEBP up to 10MB each. First image will be the main photo.</p>
                         </div>
 
-                        {dataImage && (
-                            <div className="relative w-52 h-40 rounded-xl overflow-hidden shadow-md border border-neutral-200">
-                                <Image
-                                    fill
-                                    alt="Uploaded image"
-                                    src={URL.createObjectURL(dataImage)}
-                                    className="object-cover"
-                                />
+                        {dataImages.length > 0 && (
+                            <div className="grid grid-cols-3 gap-2">
+                                {dataImages.map((img, index) => (
+                                    <div key={index} className="relative aspect-square rounded-xl overflow-hidden border border-neutral-200">
+                                        <Image
+                                            fill
+                                            alt={`Image ${index + 1}`}
+                                            src={URL.createObjectURL(img)}
+                                            className="object-cover"
+                                        />
+                                        {index === 0 && (
+                                            <span className="absolute top-1 left-1 bg-stayfinder text-white text-xs px-2 py-0.5 rounded-full">
+                                                Main
+                                            </span>
+                                        )}
+                                        <button
+                                            onClick={() => removeImage(index)}
+                                            className="absolute top-1 right-1 bg-white rounded-full p-0.5 shadow hover:bg-red-50"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                ))}
                             </div>
                         )}
                     </div>
 
-                    {errors.map((error, index) => {
-                        return (
-                            <div
-                                key={index}
-                                className="p-5 mb-4 bg-stayfinder text-white rounded-xl opacity-80"
-                            >
-                                {error}
-                            </div>
-                        )
-                    })}
+                    {errors.map((error, index) => (
+                        <div key={index} className="p-5 mb-4 bg-stayfinder text-white rounded-xl opacity-80">
+                            {error}
+                        </div>
+                    ))}
 
                     <CustomButtons
                         label="Previous"

@@ -54,7 +54,7 @@ const MyReservationsPage = () => {
 
             {reservations.length === 0 ? (
                 <div className="text-center py-20">
-                    <p className="text-4xl mb-4"></p>
+                    <p className="text-4xl mb-4">🗓️</p>
                     <h2 className="text-xl font-bold mb-2">No reservations yet</h2>
                     <p className="text-gray-500 mb-6">
                         You haven't made any reservations yet. Start exploring properties!

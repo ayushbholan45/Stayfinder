@@ -4,12 +4,13 @@ from django.http import JsonResponse
 
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework_simplejwt.tokens import AccessToken
-from .models import Property, Reservation, Review
+from .models import Property, Reservation, Review, PropertyImage
 from .serializers import PropertiesListSerializer, PropertiesDetailSerializer, ReservationsListSerializer, ReviewSerializer
 from datetime import date
 
 from .forms import PropertyForm
 from useraccount.models import User
+from django.shortcuts import get_object_or_404
 
 
 stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
@@ -124,11 +125,12 @@ def properties_list(request):
 @authentication_classes([])
 @permission_classes([])  
 def properties_detail(request, pk):
-    property = Property.objects.get(pk=pk)
-
-    serializer = PropertiesDetailSerializer(property, many=False)
-
-    return JsonResponse(serializer.data)
+    try:
+        property = Property.objects.get(pk=pk)
+        serializer = PropertiesDetailSerializer(property, many=False)
+        return JsonResponse(serializer.data)
+    except Property.DoesNotExist:
+        return JsonResponse({'error': 'Property not found'}, status=404)
 
 @api_view(['GET'])
 @authentication_classes([])
@@ -141,22 +143,6 @@ def property_reservations(request, pk):
 
     return JsonResponse(serializer.data, safe=False)
 
-
-    
-@api_view(['POST', 'FILES'])
-def create_property(request):
-    form = PropertyForm(request.POST, request.FILES)
-
-    if form.is_valid():
-        property = form.save(commit=False)
-        property.landlord = request.user
-        property.save()
-
-        return JsonResponse({'success': True})
-    else:
-        print('error', form.errors, form.non_field_errors)
-        return JsonResponse({'errors': form.errors.as_json()}, status=400)
-    
 
 @api_view(['POST'])
 def book_property(request, pk):
@@ -264,3 +250,51 @@ def cancel_reservation(request, pk):
         return JsonResponse({'error': 'Reservation not found'}, status=404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
+    
+
+@api_view(['POST', 'FILES'])
+def create_property(request):
+    form = PropertyForm(request.POST, request.FILES)
+
+    if form.is_valid():
+        property = form.save(commit=False)
+        property.landlord = request.user
+        property.save()
+
+        # Save additional images
+        images = request.FILES.getlist('images')
+        for index, image in enumerate(images):
+            PropertyImage.objects.create(
+                property=property,
+                image=image,
+                order=index
+            )
+
+        return JsonResponse({'success': True})
+    else:
+        print('error', form.errors, form.non_field_errors)
+        return JsonResponse({'errors': form.errors.as_json()}, status=400)
+    
+    
+    
+
+@api_view(['POST'])
+def add_property_images(request, pk):
+    try:
+        property = Property.objects.get(pk=pk, landlord=request.user)
+    except Property.DoesNotExist:
+        return JsonResponse({'error': 'Property not found'}, status=404)
+
+    images = request.FILES.getlist('images')
+    if not images:
+        return JsonResponse({'error': 'No images provided'}, status=400)
+
+    existing_count = property.images.count()
+    for index, image in enumerate(images):
+        PropertyImage.objects.create(
+            property=property,
+            image=image,
+            order=existing_count + index
+        )
+
+    return JsonResponse({'success': True})

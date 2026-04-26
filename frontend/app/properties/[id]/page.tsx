@@ -4,6 +4,9 @@ import apiService from "@/app/services/apiService"
 import { getUserId } from "@/app/lib/actions"
 import Link from "next/link"
 import Reviews from "@/app/ components/properties/Reviews"
+import ImageGallery from "@/app/ components/properties/ImageGallery"
+import AddPropertyImages from "@/app/ components/properties/AddPropertyImages"
+
 
 const PropertyDetailPage = async ({ params }: { params: Promise<{ id: string }> }) => {
     const { id } = await params;
@@ -21,11 +24,14 @@ const PropertyDetailPage = async ({ params }: { params: Promise<{ id: string }> 
         } catch {}
     }
 
+    const isLandlord = userId === property.landlord.id;
+
     return (
         <main className="max-w-6xl mx-auto px-6 pb-6">
-            <div className="w-full h-[64vh] mb-4 overflow-hidden rounded-xl relative">
-                <Image fill src={property.image_url} className="object-cover w-full h-full" alt="Beach house" />
-            </div>
+            <ImageGallery
+                mainImage={property.image_url}
+                images={property.images || []}
+            />
 
             <div className="mt-4 grid grid-cols-1 md:grid-cols-5 gap-4 items-start">
                 <div className="py-6 pr-6 col-span-3">
@@ -54,6 +60,12 @@ const PropertyDetailPage = async ({ params }: { params: Promise<{ id: string }> 
                     <hr className="opacity-20" />
 
                     <p className="mt-6 text-lg">{property.description}</p>
+
+                    {isLandlord && (
+                        <div className="mt-4">
+                            <AddPropertyImages propertyId={id} />
+                        </div>
+                    )}
 
                     <Reviews propertyId={id} userId={userId} />
                 </div>

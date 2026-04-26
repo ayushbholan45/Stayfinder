@@ -84,45 +84,36 @@ StayFinder is an Airbnb-inspired property rental ecosystem built with a **Next.j
 ---
 
 ## Features
+Property & Search
+Dynamic Listings: Category-based filtering (Beach, Villas, Tiny Homes) with persistent favorites.
 
-### Property Ecosystem
-- Dynamic property listings with rich media
-- Category-based filtering: All, Beach, Villas, Cabins, Tiny Homes
-- Favorites system — save and revisit properties across sessions
-- Detailed property pages with availability, host info, and reviews
+Multi-Step Search: Guided modal for location, interactive date picking, and guest requirements.
 
-### Advanced Multi-Step Search
-- Location search with country/city input
-- Interactive date range picker (check-in & check-out calendar)
-- Guest count, bedroom count, and bathroom count filters
-- Guided multi-step modal UX for a clean search experience
+Property Details: Comprehensive views for availability, host profiles, and reviews.
 
-### AI-Powered Descriptions
-- One-click AI description generation during property creation
-- LLM reads listing metadata: title, location, price, guest capacity, bedrooms, bathrooms
-- Output is fully editable before the listing goes live
+AI & Real-Time Tech
+AI Descriptions: One-click LLM generation of listing descriptions from metadata.
 
-### Real-Time Messaging
-- WebSocket-based instant messaging between guests and hosts
-- Conversation threads scoped per property and per user pair
-- Live message delivery with no page refresh required
+Instant Messaging: Real-time, WebSocket-based chat between guests and hosts.
 
-### Reviews & Ratings
-- Guests can leave star ratings and written reviews on any property
-- Interactive star selector with text review input
-- Empty state handling ("No reviews yet. Be the first to review!")
-- Reviews displayed per property on the detail page
+User & Host Management
+Dual Dashboards: Centralized views for managing reservations, hosted properties, and favorites.
 
-### User Management
-- Login / Signup via modal-based auth flow (no page redirect)
-- Personalized profiles with avatar image support and initials fallback
-- Hamburger menu with quick access to all user actions
-- "Switch to hosting" toggle for dual guest/host roles
+Seamless Auth: Modal-based login/signup and instant guest-to-host role switching.
 
-### Dashboards
-- **My Reservations** — upcoming trips, past trips, cancel booking, message host, book again
-- **My Properties** — host view for managing listed properties
-- **My Favorites** — saved properties grid
+Reviews & Ratings: Interactive star-rating system with text feedback for all properties.
+---
+
+---
+
+## Technical Challenges
+
+<details>
+<summary><b>Click to view Technical Learnings & Solutions</b></summary>
+
+* **WebSocket Synchronization:** Solved state management hurdles to ensure messages deliver instantly without page refreshes or duplicate entries.
+* **Containerized Orchestration:** Configured Docker Compose networking to allow seamless communication between the Next.js frontend, Django API, Redis, and PostgreSQL.
+</details>
 
 ---
 
@@ -146,28 +137,20 @@ StayFinder is an Airbnb-inspired property rental ecosystem built with a **Next.j
 
 ```
 stayfinder/
-├── frontend/                  # Next.js application
-│   ├── app/                   # App Router pages
-│   │   ├── page.tsx           # Homepage / listings
-│   │   ├── properties/        # Property detail pages
-│   │   ├── inbox/             # Messaging UI
-│   │   └── ...
-│   ├── components/            # Reusable UI components
-│   │   ├── modals/            # Auth, Search, AddProperty modals
-│   │   ├── navbar/            # Top navigation bar
-│   │   └── ...
-│   └── .env.local             # Frontend environment variables
+├── frontend/                
+│   ├── app/                 # Page routing & Next.js Server Components
+│   ├── components/          # Modular UI (Modals, Navigation, Listings)
+│   ├── hooks/               # Custom React hooks for WebSockets & state
+│   └── lib/                 # Fetch API configurations & global constants
 │
-├── backend/                   # Django + DRF application
-│   ├── stayfinder/            # Django project settings
-│   ├── properties/            # Property CRUD, categories, favorites, reviews
-│   ├── bookings/              # Reservation logic
-│   ├── chat/                  # WebSocket consumers & routing
-│   ├── useraccount/           # Custom user model & auth
-│   └── requirements.txt
+├── backend/                 
+│   ├── property/            # Listings, Categories, Reviews, & Favorites
+│   ├── bookings/            # Reservation management & logic
+│   ├── chat/                # Real-time WebSocket Consumers & Models
+│   ├── useraccount/         # Custom User Model & JWT Authentication
+│   └── requirements.txt     # Python dependencies
 │
-├── docker-compose.yml         # Local development orchestration
-├── docker-compose.prod.yml    # Production orchestration
+├── docker-compose.yml       # Container orchestration
 └── README.md
 ```
 
@@ -256,7 +239,7 @@ NEXT_PUBLIC_WS_URL=ws://localhost:8000
 
 ---
 
-## 📡 API Reference
+## API Reference
 
 | Method | Endpoint | Description |
 |---|---|---|

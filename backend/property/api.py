@@ -252,4 +252,15 @@ def add_review(request, pk):
     except Exception as e:
         print('Error', e)
         return JsonResponse({'error': str(e)}, status=400)
-    
+
+
+@api_view(['DELETE'])
+def cancel_reservation(request, pk):
+    try:
+        reservation = Reservation.objects.get(pk=pk, created_by=request.user)
+        reservation.delete()
+        return JsonResponse({'success': True})
+    except Reservation.DoesNotExist:
+        return JsonResponse({'error': 'Reservation not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)

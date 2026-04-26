@@ -218,11 +218,11 @@ const ProfilePage = () => {
                 {upcomingTrips.length === 0 ? (
                     <p className="text-gray-500">No upcoming trips.</p>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
                         {upcomingTrips.map((reservation) => (
-                            <div key={reservation.id} className="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                            <div key={reservation.id} className="border border-gray-200 rounded-xl overflow-hidden shadow-sm flex flex-col">
                                 <div
-                                    className="relative h-40 cursor-pointer"
+                                    className="relative h-40 cursor-pointer flex-shrink-0"
                                     onClick={() => router.push(`/properties/${reservation.property.id}`)}
                                 >
                                     <Image
@@ -232,7 +232,7 @@ const ProfilePage = () => {
                                         className="object-cover hover:scale-105 transition"
                                     />
                                 </div>
-                                <div className="p-4">
+                                <div className="p-4 flex flex-col flex-1">
                                     <h3
                                         className="font-bold text-lg cursor-pointer hover:underline"
                                         onClick={() => router.push(`/properties/${reservation.property.id}`)}
@@ -245,8 +245,7 @@ const ProfilePage = () => {
                                     <p className="text-gray-500 text-sm">
                                         {reservation.number_of_nights} nights · <span className="font-bold text-black">${reservation.total_price}</span>
                                     </p>
-
-                                    <div className="flex gap-2 mt-4">
+                                    <div className="flex gap-2 mt-auto pt-4">
                                         <button
                                             onClick={() => handleMessageHost(reservation.property.landlord.id)}
                                             className="flex-1 text-center py-2 px-4 border border-gray-300 rounded-xl text-sm font-semibold hover:bg-gray-50 transition"
@@ -257,7 +256,7 @@ const ProfilePage = () => {
                                             onClick={() => setConfirmCancelId(reservation.id)}
                                             className="flex-1 py-2 px-4 bg-red-50 text-red-600 border border-red-200 rounded-xl text-sm font-semibold hover:bg-red-100 transition"
                                         >
-                                            Cancel booking
+                                            Cancel reservation
                                         </button>
                                     </div>
                                 </div>
@@ -285,7 +284,7 @@ const ProfilePage = () => {
                                         fill
                                         src={reservation.property.image_url}
                                         alt={reservation.property.title}
-                                        className="object-cover grayscale-[30%]"
+                                        className="object-cover grayscale-30"
                                     />
                                 </div>
                                 <div className="p-4">

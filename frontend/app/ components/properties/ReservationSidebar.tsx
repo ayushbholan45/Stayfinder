@@ -156,7 +156,7 @@ const ReservationSidebar: React.FC<ReservationSidebarProps> = ({ property, userI
         return (
             <aside className="mt-8 p-6 col-span-2 rounded-xl border border-gray-300 shadow-xl">
                 <div className="text-center py-8">
-                    <p className="text-2xl mb-2">🏠</p>
+                    <p className="text-2xl mb-2"></p>
                     <h2 className="text-xl font-bold mb-2">This is your property!</h2>
                     <p className="text-gray-500">You cannot book your own property.</p>
                 </div>
@@ -283,7 +283,7 @@ const ReservationSidebar: React.FC<ReservationSidebarProps> = ({ property, userI
         return (
             <aside className="mt-8 p-6 col-span-2 rounded-xl border border-gray-300 shadow-xl">
                 <div className="text-center py-8">
-                    <p className="text-2xl mb-2">🎉</p>
+                    <p className="text-2xl mb-2"></p>
                     <h2 className="text-xl font-bold mb-2">Booking Confirmed!</h2>
                     <p className="text-gray-500">Your reservation has been successfully created.</p>
                 </div>

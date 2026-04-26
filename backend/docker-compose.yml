@@ -1,7 +1,7 @@
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: daphne -b 0.0.0.0 -p 8000 stayfinder_backend.asgi:application
     volumes:
       - .:/usr/src/stayfinder_backend
     ports:
@@ -10,7 +10,6 @@ services:
       - ./.env.dev
     depends_on:
       - db
-
   db:
     image: postgres:17
     volumes:
@@ -19,6 +18,5 @@ services:
       - POSTGRES_USER=postgresuser
       - POSTGRES_PASSWORD=postgrespassword
       - POSTGRES_DB=stayfinderdb
-
 volumes:
   postgres_data:

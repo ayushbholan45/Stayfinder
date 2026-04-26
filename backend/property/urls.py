@@ -10,5 +10,6 @@ urlpatterns = [
     path('<uuid:pk>/toggle_favorite/', api.toggle_favorite, name='api_toggle_favorite'),
     path('<uuid:pk>/create_payment_intent/', api.create_payment_intent, name='api_create_payment_intent'), 
     path('<uuid:pk>/reviews/', api.property_reviews, name='api_property_reviews'),
-    path('<uuid:pk>/reviews/add/', api.add_review, name='api_add_review'), 
+    path('<uuid:pk>/reviews/add/', api.add_review, name='api_add_review'),
+    path('reservations/<uuid:pk>/cancel/', api.cancel_reservation, name='api_cancel_reservation'), 
 ]

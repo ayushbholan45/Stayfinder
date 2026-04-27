@@ -136,20 +136,22 @@ TEMPLATES = [
 WSGI_APPLICATION = "stayfinder_backend.wsgi.application"
 ASGI_APPLICATION = 'stayfinder_backend.asgi.application'
 
-# Database — uses DATABASE_URL on Render, falls back to individual vars locally
-if os.environ.get("DATABASE_URL"):
+# 1. Capture the environment variable into a Python variable first
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+# 2. Check if that variable has a value
+if DATABASE_URL:
     DATABASES = {
         "default": dj_database_url.config(
-            default=DATABASE_URL,
+            default=DATABASE_URL,  # Now Python knows what this is!
             conn_max_age=600,
-            # Neon requires SSL, this line ensures it works
             ssl_require=True 
         )
     }
 else:
     DATABASES = {
         "default": {
-            "ENGINE": os.environ.get("SQL_ENGINE"),
+            "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
             "NAME": os.environ.get("SQL_DATABASE"),
             "USER": os.environ.get("SQL_USER"),
             "PASSWORD": os.environ.get("SQL_PASSWORD"),

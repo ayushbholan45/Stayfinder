@@ -48,12 +48,14 @@ SIMPLE_JWT = {
     "SIGNING_KEY": os.environ.get("JWT_SIGNING_KEY"),
     "ALGORITHM": "HS512",
 }
+ACCOUNT_EMAIL_REQUIRED = True
 
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_LOGIN_METHODS = {'email'}
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
-ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_AUTHENTICATION_METHOD = 'email' # Use the string 'email'
+ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -72,8 +74,10 @@ CORS_ALLOWED_ORIGINS = os.environ.get(
 CORS_ALLOW_ALL_ORIGINS = DEBUG  # True in dev, False in production
 
 REST_AUTH = {
-    "USE_JWT": True,
-    "JWT_AUTH_HTTPONLY": False,
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'stayfinder-auth',        # Name of the cookie (STRING)
+    'JWT_AUTH_REFRESH_COOKIE': 'stayfinder-refresh', # Name of the refresh cookie (STRING)
+    'JWT_AUTH_HTTPONLY': False,                  # Security setting (BOOLEAN)
     'REGISTER_SERIALIZER': 'useraccount.serializers.CustomRegisterSerializer',
 }
 

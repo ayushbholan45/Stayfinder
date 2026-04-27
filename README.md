@@ -167,7 +167,7 @@ stayfinder/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/stayfinder.git
+git clone https://github.com/ayushbholan45/Stayfinder.git
 cd stayfinder
 ```
 

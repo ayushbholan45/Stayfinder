@@ -2,30 +2,36 @@ import { getAccessToken } from "../lib/actions";
 
 const getApiHost = () => {
     if (typeof window === 'undefined') {
-        // Server-side (SSR): use Docker service name
-        return process.env.NEXT_PUBLIC_API_HOST_SERVER || 'http://web:8000';
+        // Server-side (SSR): use internal Render service URL
+        return process.env.NEXT_PUBLIC_API_HOST_SERVER || 'http://localhost:8000';
     }
-    // Client-side (browser): use localhost
+    // Client-side (browser): use public Render URL
     return process.env.NEXT_PUBLIC_API_HOST || 'http://localhost:8000';
+};
+
+const getAuthHeaders = async (includeContentType = true): Promise<Record<string, string>> => {
+    const headers: Record<string, string> = {
+        'Accept': 'application/json',
+        ...(includeContentType && { 'Content-Type': 'application/json' }),
+    };
+
+    try {
+        const token = await getAccessToken();
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+    } catch {
+        // not authenticated, continue without token
+    }
+
+    return headers;
 };
 
 const apiService = {
     get: async function (url: string): Promise<any> {
         console.log('get', url);
 
-        let headers: Record<string, string> = {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        };
-
-        try {
-            const token = await getAccessToken();
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
-        } catch {
-            // not authenticated, continue without token
-        }
+        const headers = await getAuthHeaders();
 
         const response = await fetch(`${getApiHost()}${url}`, {
             method: 'GET',
@@ -42,18 +48,10 @@ const apiService = {
     post: async function (url: string, data: any): Promise<any> {
         console.log('post', url, data);
 
-        let headers: Record<string, string> = {};
+        // Fixed: was using process.env.NEXT_PUBLIC_API_HOST directly, missing SSR host
+        const headers = await getAuthHeaders();
 
-        try {
-            const token = await getAccessToken();
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
-        } catch {
-            // not authenticated, continue without token
-        }
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
+        const response = await fetch(`${getApiHost()}${url}`, {
             method: 'POST',
             body: data,
             headers
@@ -67,11 +65,8 @@ const apiService = {
     },
 
     postForm: async function (url: string, data: FormData): Promise<any> {
-        let headers: Record<string, string> = {};
-        try {
-            const token = await getAccessToken();
-            if (token) headers['Authorization'] = `Bearer ${token}`;
-        } catch {}
+        // Fixed: FormData must NOT have Content-Type set (browser sets it with boundary)
+        const headers = await getAuthHeaders(false);
 
         const response = await fetch(`${getApiHost()}${url}`, {
             method: 'POST',
@@ -81,12 +76,13 @@ const apiService = {
 
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         return response.json();
-        },
+    },
 
     postWithoutToken: async function (url: string, data: any): Promise<any> {
         console.log('post', url, data);
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
+        // Fixed: was using process.env.NEXT_PUBLIC_API_HOST directly, missing SSR host
+        const response = await fetch(`${getApiHost()}${url}`, {
             method: 'POST',
             body: data,
             headers: {
@@ -101,21 +97,10 @@ const apiService = {
     delete: async function (url: string): Promise<any> {
         console.log('delete', url);
 
-        let headers: Record<string, string> = {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        };
+        // Fixed: was using process.env.NEXT_PUBLIC_API_HOST directly, missing SSR host
+        const headers = await getAuthHeaders();
 
-        try {
-            const token = await getAccessToken();
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
-        } catch {
-            // not authenticated
-        }
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`, {
+        const response = await fetch(`${getApiHost()}${url}`, {
             method: 'DELETE',
             headers
         });
@@ -127,10 +112,6 @@ const apiService = {
         const text = await response.text();
         return text ? JSON.parse(text) : { success: true };
     }
-
-    
 }
-
-
 
 export default apiService;

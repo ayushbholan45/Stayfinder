@@ -73,7 +73,7 @@ CORS_ALLOWED_ORIGINS = os.environ.get(
     "http://127.0.0.1:8000,http://127.0.0.1:3000"
 ).split(",")
 
-CORS_ALLOW_ALL_ORIGINS = DEBUG  # True in dev, False in production
+CORS_ALLOW_ALL_ORIGINS = True  # True in dev, False in production
 
 REST_AUTH = {
     'USE_JWT': True,

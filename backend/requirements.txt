@@ -57,3 +57,4 @@ websockets==16.0
 whitenoise==6.9.0
 daphne==4.1.2
 django-allauth==65.4.1
+dj-rest-auth==7.0.0

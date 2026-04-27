@@ -12,6 +12,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
+# Fixed: env var name matches render.yaml (DJANGO_ALLOWED_HOSTS)
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
 
 AUTH_USER_MODEL = 'useraccount.User'
@@ -45,12 +46,13 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKEN": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": True,
+    # Fixed: added JWT_SIGNING_KEY to render.yaml so this won't be None
     "SIGNING_KEY": os.environ.get("JWT_SIGNING_KEY"),
     "ALGORITHM": "HS512",
 }
-ACCOUNT_EMAIL_REQUIRED = True
 
-ACCOUNT_AUTHENTICATION_METHOD = 'email' # Use the string 'email'
+# Fixed: replaced deprecated ACCOUNT_AUTHENTICATION_METHOD
+ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
@@ -75,9 +77,9 @@ CORS_ALLOW_ALL_ORIGINS = DEBUG  # True in dev, False in production
 
 REST_AUTH = {
     'USE_JWT': True,
-    'JWT_AUTH_COOKIE': 'stayfinder-auth',        # Name of the cookie (STRING)
-    'JWT_AUTH_REFRESH_COOKIE': 'stayfinder-refresh', # Name of the refresh cookie (STRING)
-    'JWT_AUTH_HTTPONLY': False,                  # Security setting (BOOLEAN)
+    'JWT_AUTH_COOKIE': 'stayfinder-auth',
+    'JWT_AUTH_REFRESH_COOKIE': 'stayfinder-refresh',
+    'JWT_AUTH_HTTPONLY': False,
     'REGISTER_SERIALIZER': 'useraccount.serializers.CustomRegisterSerializer',
 }
 
@@ -140,16 +142,14 @@ TEMPLATES = [
 WSGI_APPLICATION = "stayfinder_backend.wsgi.application"
 ASGI_APPLICATION = 'stayfinder_backend.asgi.application'
 
-# 1. Capture the environment variable into a Python variable first
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
-# 2. Check if that variable has a value
 if DATABASE_URL:
     DATABASES = {
         "default": dj_database_url.config(
-            default=DATABASE_URL,  # Now Python knows what this is!
+            default=DATABASE_URL,
             conn_max_age=600,
-            ssl_require=True 
+            ssl_require=False  # Fixed: Render includes SSL params in the URL already
         )
     }
 else:

@@ -18,6 +18,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class CustomRegisterSerializer(RegisterSerializer):  
     username = None
+    email = serializers.EmailField(required=True)
     name = serializers.CharField(required=True)
 
     def get_cleaned_data(self):
@@ -26,3 +27,11 @@ class CustomRegisterSerializer(RegisterSerializer):
             'password1': self.validated_data.get('password1', ''),
             'email': self.validated_data.get('email', ''),
         }
+        
+    def save(self, request):
+        # This ensures the 'name' field from the frontend gets saved 
+        # to your custom User model's 'name' field
+        user = super().save(request)
+        user.name = self.validated_data.get('name', '')
+        user.save()
+        return user

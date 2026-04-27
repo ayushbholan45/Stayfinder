@@ -3,7 +3,7 @@ services:
     name: stayfinder-backend
     runtime: docker
     dockerfilePath: ./Dockerfile
-    startCommand: daphne -b 0.0.0.0 -p $PORT stayfinder_backend.asgi:application
+    
     envVars:
       - key: DATABASE
         value: postgres

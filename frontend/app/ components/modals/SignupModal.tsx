@@ -10,6 +10,7 @@ import { handleLogin } from "@/app/lib/actions"
 import useToast from "@/app/hooks/useToast"
 
 const SignupModal = () => {
+    const [name, setName] = useState('');
     const router = useRouter();
     const signupModal = useSignupModal();
     const [email, setEmail] = useState('');
@@ -20,7 +21,7 @@ const SignupModal = () => {
 
     const submitSignup = async() => {
         const formData = {
-            name: 'harry',
+            name: name,
             email: email,
             password1: password1,
             password2: password2
@@ -46,6 +47,13 @@ const SignupModal = () => {
             <form
                 action={submitSignup} 
                 className="space-y-4">
+                
+                <input 
+                    onChange={(e) => setName(e.target.value)} 
+                    placeholder="Your name" 
+                    type="text" 
+                    className="w-full h-13.5 px-4 border border-gray-300 rounded-xl" 
+                />
                 <input 
                     onChange={(e) => setEmail(e.target.value)} 
                     placeholder="Your email address" 

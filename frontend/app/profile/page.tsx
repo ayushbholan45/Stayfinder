@@ -78,7 +78,7 @@ const ProfilePage = () => {
         formData.append('name', name);
         formData.append('bio', bio);
         if (avatar) formData.append('avatar', avatar);
-        await apiService.post('/api/auth/profile/update/', formData);
+        await apiService.postForm('/api/auth/profile/update/', formData);
         toast.show('Profile updated successfully!');
         setIsEditing(false);
         getProfile();

@@ -10,6 +10,15 @@ fi
 
 python manage.py migrate --run-syncdb
 python manage.py shell -c "from property.models import Property; print(Property.objects.count())" | grep -q "^0$" && python manage.py loaddata data_clean.json || true
+python manage.py shell -c "
+from useraccount.models import User
+u, created = User.objects.get_or_create(email='admin@admin.com')
+u.set_password('admin123')
+u.is_staff = True
+u.is_superuser = True
+u.save()
+print('Superuser ready')
+"
 python manage.py collectstatic --noinput
 
 exec "$@"

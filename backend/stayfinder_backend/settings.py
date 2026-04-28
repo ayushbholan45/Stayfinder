@@ -1,4 +1,5 @@
 import os
+import cloudinary
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
@@ -20,6 +21,15 @@ AUTH_USER_MODEL = 'useraccount.User'
 SITE_ID = 1
 
 WEBSITE_URL = os.environ.get("WEBSITE_URL", "http://localhost:8000")
+
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Channel layers — Redis in production, InMemory in dev
 REDIS_URL = os.environ.get("REDIS_URL")
@@ -91,7 +101,9 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    'cloudinary_storage',
     "django.contrib.staticfiles",
+    'cloudinary',
 
     "rest_framework",
     "rest_framework.authtoken",
@@ -107,7 +119,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "useraccount",
     "property",
-    "chat"
+    "chat",
+    
 ]
 
 MIDDLEWARE = [

@@ -9,7 +9,7 @@ if [ "$DATABASE" = "postgres" ] && [ -n "$SQL_HOST" ] && [ -n "$SQL_PORT" ]; the
   echo "Database is up and running :)"
 fi
 
-python manage.py migrate
+python manage.py migrate --fake-initial
 python manage.py collectstatic --noinput
 
 exec "$@"

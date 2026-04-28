@@ -8,7 +8,8 @@ if [ "$DATABASE" = "postgres" ] && [ -n "$SQL_HOST" ] && [ -n "$SQL_PORT" ]; the
   echo "Database is up and running :)"
 fi
 
-python manage.py migrate --run-syncdb --skip-checks
+python manage.py migrate --run-syncdb
+python manage.py shell -c "from property.models import Property; print(Property.objects.count())" | grep -q "^0$" && python manage.py loaddata data_clean.json || true
 python manage.py collectstatic --noinput
 
 exec "$@"

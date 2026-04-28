@@ -28,8 +28,10 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     const otherUser = conversation.users?.find((user) => user.id != userId)
     const [realtimeMessages, setRealtimeMessages] = useState<MessageType[]>([]);
 
-    const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(`ws://127.0.0.1:8000/ws/${conversation.id}/?token=${token}`, {
-        share: false,
+    const wsUrl = process.env.NEXT_PUBLIC_API_HOST?.replace('https://', 'wss://').replace('http://', 'ws://');
+
+
+    const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(`${wsUrl}/ws/${conversation.id}/?token=${token}`, {
         shouldReconnect: () => true,
       },
     )

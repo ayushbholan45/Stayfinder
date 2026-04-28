@@ -29,3 +29,4 @@ ENTRYPOINT ["/usr/src/stayfinder_backend/entrypoint.sh"]
 
 # This is what exec "$@" will run
 CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "stayfinder_backend.asgi:application"]
+# force rebuild Tue Apr 28 12:06:29 +0545 2026

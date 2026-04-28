@@ -8,7 +8,7 @@ if [ "$DATABASE" = "postgres" ] && [ -n "$SQL_HOST" ] && [ -n "$SQL_PORT" ]; the
   echo "Database is up and running :)"
 fi
 
-python manage.py migrate --run-syncdb
+python manage.py migrate --run-syncdb --skip-checks
 python manage.py collectstatic --noinput
 
 exec "$@"

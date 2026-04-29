@@ -25,7 +25,11 @@ class Property(models.Model):
         return self.title 
     
     def image_url(self):
-        return self.image.url
+        if self.image:
+            import os
+            cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME')
+            return f'https://res.cloudinary.com/{cloud_name}/image/upload/{self.image}'
+        return ''
     
     
 
@@ -68,4 +72,8 @@ class PropertyImage(models.Model):
         return f'{self.property.title} - image {self.order}'
 
     def image_url(self):
-        return self.image.url
+        if self.image:
+            import os
+            cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME')
+            return f'https://res.cloudinary.com/{cloud_name}/image/upload/{self.image}'
+        return ''

@@ -28,7 +28,10 @@ class Property(models.Model):
         if self.image:
             import os
             cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME')
-            return f'https://res.cloudinary.com/{cloud_name}/image/upload/{self.image}'
+            image_path = str(self.image)
+            # Add extension again since Cloudinary doubles it
+            ext = os.path.splitext(image_path)[1]
+            return f'https://res.cloudinary.com/{cloud_name}/image/upload/{image_path}{ext}'
         return ''
     
     
@@ -75,5 +78,8 @@ class PropertyImage(models.Model):
         if self.image:
             import os
             cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME')
-            return f'https://res.cloudinary.com/{cloud_name}/image/upload/{self.image}'
+            image_path = str(self.image)
+            # Add extension again since Cloudinary doubles it
+            ext = os.path.splitext(image_path)[1]
+            return f'https://res.cloudinary.com/{cloud_name}/image/upload/{image_path}{ext}'
         return ''

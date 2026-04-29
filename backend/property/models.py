@@ -25,7 +25,7 @@ class Property(models.Model):
         return self.title 
     
     def image_url(self):
-        return f'{settings.WEBSITE_URL}{self.image.url}'
+        return self.image.url
     
     
 
@@ -68,4 +68,4 @@ class PropertyImage(models.Model):
         return f'{self.property.title} - image {self.order}'
 
     def image_url(self):
-        return f'{settings.WEBSITE_URL}{self.image.url}'
+        return self.image.url

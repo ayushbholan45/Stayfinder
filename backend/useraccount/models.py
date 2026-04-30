@@ -51,6 +51,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     def avatar_url(self):
         if self.avatar:
-            return f'{settings.WEBSITE_URL}{self.avatar.url}'
-        else:
-            return ''
+            import os
+            cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME')
+            image_path = str(self.avatar)
+            ext = os.path.splitext(image_path)[1]
+            return f'https://res.cloudinary.com/{cloud_name}/image/upload/{image_path}{ext}'
+        return ''

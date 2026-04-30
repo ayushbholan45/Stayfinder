@@ -87,7 +87,10 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
             formData.append('number_of_nights', nights.toString());
             formData.append('total_price', totalPrice.toString());
 
-            const response = await apiService.post(`/api/properties/${propertyId}/book/`, formData);
+            const response = await apiService.postForm(
+                `/api/properties/${propertyId}/book/`,
+                formData
+            );
 
             if (response.success) {
                 onSuccess();
@@ -171,7 +174,6 @@ const ReservationSidebar: React.FC<ReservationSidebarProps> = ({ property, userI
                     ✓ Booked
                 </div>
                 <h2 className="text-xl font-bold mb-4">Your reservation</h2>
-
                 <div className="space-y-3 text-sm">
                     <div className="flex justify-between py-2 border-b border-gray-100">
                         <span className="text-gray-500">Check-in</span>
@@ -190,14 +192,12 @@ const ReservationSidebar: React.FC<ReservationSidebarProps> = ({ property, userI
                         <span className="font-bold text-lg">${existingReservation.total_price}</span>
                     </div>
                 </div>
-
                 <button
                     onClick={handleMessageHost}
                     className="mt-6 w-full text-center py-3 border border-gray-300 rounded-xl font-semibold hover:bg-gray-50 transition text-sm"
                 >
                     Message host
                 </button>
-
                 <button
                     onClick={() => router.push('/profile')}
                     className="mt-3 w-full text-center py-3 text-red-500 border border-red-200 bg-red-50 rounded-xl font-semibold hover:bg-red-100 transition text-sm"
@@ -214,7 +214,7 @@ const ReservationSidebar: React.FC<ReservationSidebarProps> = ({ property, userI
                 const formData = new FormData();
                 formData.append('total_price', totalPrice.toString());
 
-                const response = await apiService.post(
+                const response = await apiService.postForm(
                     `/api/properties/${property.id}/create_payment_intent/`,
                     formData
                 );
